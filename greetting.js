@@ -1,52 +1,44 @@
-const form = document.querySelector(".js-form");
-const input = document.querySelector("input");
-const greeting = document.querySelector(".js-greetings");
+const nameContainer = document.querySelector(".js-name");
 
-const USER_LS = "currentUser";
-const SHOWING_ON = "showing";
-
-function saveName(text)
-{
-    localStorage.setItem(USER_LS, text);
+function paintName(name) {
+  nameContainer.innerHTML = "";
+  const title = document.createElement("span");
+  title.className = "name__text";
+  title.innerHTML = `Hello ${name}`;
+  nameContainer.appendChild(title);
 }
 
-function handleSubmit(event)
-{
-    event.preventDefault();
-    const currentValue = input.value;
-    paintGreeting(currentValue);
-    saveName(currentValue);
+function handleSubmit(event) {
+  event.preventDefault();
+  const form = event.target;
+  const input = form.querySelector("input");
+  const value = input.value;
+  localStorage.setItem("username", value);
+  paintName(value);
 }
 
-function askForName()
-{
-    form.classList.add(SHOWING_ON);
-    form.addEventListener("submit", handleSubmit);
+function paintInput() {
+  const input = document.createElement("input");
+  input.placeholder = "Type your name here";
+  input.type = "text";
+  input.className = "name__input";
+  const form = document.createElement("form");
+  form.addEventListener("submit", handleSubmit);
+  form.appendChild(input);
+  nameContainer.appendChild(form);
 }
 
-function paintGreeting(text)
-{
-    form.classList.remove(SHOWING_ON);
-    greeting.classList.add(SHOWING_ON);
-    greeting.innerText = `Hello ${text}`; 
+function loadName() {
+  const name = localStorage.getItem("username");
+  if (name === null) {
+    paintInput();
+  } else {
+    paintName(name);
+  }
 }
 
-function loadName()
-{
-    const currntUser = localStorage.getItem(USER_LS);
-    if(currntUser === null)
-    {
-        askForName();
-    }
-    else
-    {
-        paintGreeting(currntUser);
-    }
-}
-
-function init()
-{
-    loadName();
+function init() {
+  loadName();
 }
 
 init();
